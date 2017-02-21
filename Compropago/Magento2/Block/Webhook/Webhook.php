@@ -110,9 +110,10 @@ class Webhook extends Template
                 return 'Error procesando el número de orden';
             }
 
-            $table_name      = $this->resource->getTableName('sales_order');
-            $table_grid_name = $this->resource->getTableName('sales_order_grid');
-            $connection      = $this->resource->getConnection();
+            $table_name       = $this->resource->getTableName('sales_order');
+            $table_grid_name  = $this->resource->getTableName('sales_order_grid');
+            $table_order_item = $this->resource->getTableName('sales_order_item');
+            $connection       = $this->resource->getConnection();
 
             $this->orderManager->loadByIncrementId( $response->order_info->order_id );
 
@@ -156,9 +157,15 @@ class Webhook extends Template
             $query = "UPDATE $table_grid_name SET status = '$status' WHERE entity_id = $entity_id";
             $connection->query($query);
 
+
+            /**
+             * Query for Devlyn
+             */
+            $query = "UPDATE $table_order_item SET qty_canceled='0' WHERE order_id = '$entity_id'";
+            $connection->query($query);
+
             return "success";
         }catch (\Exception $e){
-            //something went wrong at sdk lvl
             return $e->getMessage();
         }
     }
