@@ -86,7 +86,6 @@ class Webhook extends Template
              */
             Validations::validateGateway($client);
         }catch (\Exception $e) {
-            //something went wrong at sdk lvl
             return $e->getMessage();
         }
 
